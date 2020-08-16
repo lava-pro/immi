@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class CreateFailedJobsTable extends Migration
@@ -13,14 +12,18 @@ class CreateFailedJobsTable extends Migration
      */
     public function up()
     {
-        Schema::create('failed_jobs', function (Blueprint $table) {
-            $table->id();
-            $table->text('connection');
-            $table->text('queue');
-            $table->longText('payload');
-            $table->longText('exception');
-            $table->timestamp('failed_at')->useCurrent();
-        });
+        Schema::getConnection()->statement
+        (
+            "CREATE TABLE `failed_jobs` (
+              `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+              `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+              `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+              `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+              `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+              `failed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;"
+        );
     }
 
     /**
@@ -30,6 +33,9 @@ class CreateFailedJobsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('failed_jobs');
+        Schema::getConnection()->statement
+        (
+            "DROP TABLE IF EXISTS `failed_jobs`;"
+        );
     }
 }
